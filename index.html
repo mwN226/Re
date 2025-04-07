@@ -1,0 +1,379 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linkforce JHA Generator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #002d56;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    main {
+      max-width: 800px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #002d56;
+      margin-top: 0;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+    select[multiple] {
+      height: 100px;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      background: #0055a4;
+      color: white;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #003f7d;
+    }
+    #output {
+      margin-top: 30px;
+      background: #eef2fa;
+      padding: 20px;
+      border-radius: 6px;
+      white-space: pre-wrap;
+      border: 1px solid #aac;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Linkforce JHA Generator</h1>
+</header>
+
+<main>
+  <h2>Create a Job Hazard Analysis</h2>
+
+  <label>Task:</label>
+  <input type="text" id="task" list="taskSuggestions" placeholder="e.g. Remove guarding" />
+  <datalist id="taskSuggestions">
+    <option value="Remove guarding">
+    <option value="Install equipment">
+    <option value="Isolate plant">
+    <option value="Inspect belts">
+    <option value="Work at height">
+  </datalist>
+
+  <label>Tools:</label>
+  <input type="text" id="tools" list="toolSuggestions" placeholder="e.g. Hammer, Spanner" />
+  <datalist id="toolSuggestions">
+    <option value="Hammer">
+    <option value="Spanner">
+    <option value="Ladder">
+    <option value="Grinder">
+    <option value="Harness">
+  </datalist>
+
+  <label>Hazards (select one or more):</label>
+  <select id="hazards" multiple>
+    <option value="Slips">Slips</option>
+    <option value="Trips">Trips</option>
+    <option value="Falls">Falls</option>
+    <option value="Pinch Points">Pinch Points</option>
+    <option value="Manual Handling">Manual Handling</option>
+    <option value="Line of Fire">Line of Fire</option>
+    <option value="Isolation Error">Isolation Error</option>
+<option value="Hot Weather">Hot Weather</option>
+<option value="Stored Energy">Stored Energy</option>
+<option value="Lifting Operations">Lifting Operations</option>
+<option value="Dust Inhalation">Dust Inhalation</option>
+<option value="Mobile Plant Interaction">Mobile Plant Interaction</option>
+<option value="Sharp Edges">Sharp Edges</option>
+<option value="Noise">Noise</option>
+<option value="UV Exposure">UV Exposure</option>
+<option value="Confined Spaces">Confined Spaces</option>
+<option value="Electrical Hazards">Electrical Hazards</option>
+  </select>
+
+  <label>Controls (select one or more):</label>
+  <select id="controls" multiple>
+    <option value="Use PPE">Use PPE</option>
+    <option value="Use fall protection">Use fall protection</option>
+    <option value="Spotter present">Spotter present</option>
+    <option value="Follow permit">Follow permit</option>
+    <option value="Ask questions if unsure">Ask questions if unsure</option>
+    <option value="Verify asset ID">Verify asset ID</option>
+    <option value="Lift with legs">Lift with legs</option>
+<option value="Positive communication">Positive communication</option>
+<option value="Correct tooling">Correct tooling</option>
+<option value="Understand task before starting">Understand task before starting</option>
+<option value="Use spotter">Use spotter</option>
+<option value="Maintain exclusion zone">Maintain exclusion zone</option>
+<option value="Use mechanical aids">Use mechanical aids</option>
+<option value="Pre-start checks">Pre-start checks</option>
+<option value="Stay hydrated">Stay hydrated</option>
+<option value="Follow JHA process">Follow JHA process</option>
+<option value="Use barricades">Use barricades</option>
+  </select>
+
+  <label>Comments:</label>
+  <textarea id="comments" rows="3" placeholder="Add any specific notes or precautions..."></textarea>
+
+  <button id="generateBtn" type="button">Generate JHA</button>
+
+  <div id="output">Your JHA will appear here...</div>
+</main>
+
+<script>
+  function generateJHA() {
+    const task = document.getElementById("task").value.trim();
+    const tools = document.getElementById("tools").value.trim();
+    const hazards = Array.from(document.getElementById("hazards").selectedOptions).map(opt => opt.value);
+    const controls = Array.from(document.getElementById("controls").selectedOptions).map(opt => opt.value);
+    const comments = document.getElementById("comments").value.trim();
+
+    let result = `Task: ${task}
+Tools: ${tools}
+`;
+
+    const hazardDetails = {
+      "Slips": t => {
+        const variants = [
+          `While performing "${t}", the floor may be wet or slippery, increasing the chance of slips and falls.`,
+          `During "${t}", uneven or muddy surfaces may lead to slip-related injuries such as ankle sprains.`
+        ];
+        return variants[Math.floor(Math.random() * variants.length)];
+      },
+      "Trips": t => {
+        const variants = [
+          `Trip hazards like hoses or tools underfoot during "${t}" may result in minor or moderate injuries.`,
+          `"${t}" may involve cluttered or uneven areas, increasing the risk of tripping and falling.`
+        ];
+        return variants[Math.floor(Math.random() * variants.length)];
+      },
+      "Falls": t => `We will be carrying out "${t}" at heights or on ladders, which could expose us to fall hazards and result in serious injuries.`,
+      "Pinch Points": t => {
+        const toolText = tools ? "using " + tools : "using hand tools";
+        return `We will be ${toolText} to ${t}, which could expose us to pinch points between the tools and guarding, resulting in finger and hand injuries.`;
+      },
+      "Manual Handling": t => `The task "${t}" may involve lifting or moving heavy items, exposing workers to manual handling risks such as back strain or dropped object injuries.`,
+      "Line of Fire": t => `We will be performing "${t}" near moving equipment or suspended loads, which may expose us to line of fire hazards resulting in crush or impact injuries.`,
+      "Isolation Error": t => `We will be ${t} involving isolation processes, and if incorrect, it could lead to unexpected energization or movement causing serious injury or equipment damage.`
+    };
+
+    if (hazards.length > 0) {
+      result += `
+Hazard/Risk Description:
+`;
+      hazards.forEach(h => {
+        if (hazardDetails[h]) {
+          result += `- ${hazardDetails[h](task)}
+`;
+        } else {
+          result += `- Exposure to ${h.toLowerCase()} may result in injury or equipment damage.
+`;
+        }
+      });
+    }
+
+    if (controls.length > 0) {
+      result += `
+Controls:
+`;
+      controls.forEach(c => {
+        result += `- ${c}
+`;
+      });
+    }
+
+    if (comments) {
+      result += `
+Comments:
+${comments}`;
+    }
+
+    document.getElementById("output").textContent = result.trim();
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("generateBtn").addEventListener("click", generateJHA);
+  });
+</script>
+
+</body>
+</html>
+
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Linkforce JHA Generator</h1>
+</header>
+
+<main>
+  <h2>Create a Job Hazard Analysis</h2>
+
+  <label>Task:</label>
+  <input type="text" id="task" list="taskSuggestions" placeholder="e.g. Remove guarding" />
+  <datalist id="taskSuggestions">
+    <option value="Remove guarding">
+    <option value="Install equipment">
+    <option value="Isolate plant">
+    <option value="Inspect belts">
+    <option value="Work at height">
+  </datalist>
+
+  <label>Tools:</label>
+  <input type="text" id="tools" list="toolSuggestions" placeholder="e.g. Hammer, Spanner" />
+  <datalist id="toolSuggestions">
+    <option value="Hammer">
+    <option value="Spanner">
+    <option value="Ladder">
+    <option value="Grinder">
+    <option value="Harness">
+  </datalist>
+
+  <label>Hazards (select one or more):</label>
+  <select id="hazards" multiple>
+    <option value="Slips">Slips</option>
+    <option value="Trips">Trips</option>
+    <option value="Falls">Falls</option>
+    <option value="Pinch Points">Pinch Points</option>
+    <option value="Manual Handling">Manual Handling</option>
+    <option value="Line of Fire">Line of Fire</option>
+    <option value="Isolation Error">Isolation Error</option>
+<option value="Hot Weather">Hot Weather</option>
+<option value="Stored Energy">Stored Energy</option>
+<option value="Lifting Operations">Lifting Operations</option>
+<option value="Dust Inhalation">Dust Inhalation</option>
+<option value="Mobile Plant Interaction">Mobile Plant Interaction</option>
+<option value="Sharp Edges">Sharp Edges</option>
+<option value="Noise">Noise</option>
+<option value="UV Exposure">UV Exposure</option>
+<option value="Confined Spaces">Confined Spaces</option>
+<option value="Electrical Hazards">Electrical Hazards</option>
+  </select>
+
+  <label>Controls (select one or more):</label>
+  <select id="controls" multiple>
+    <option value="Use PPE">Use PPE</option>
+    <option value="Use fall protection">Use fall protection</option>
+    <option value="Spotter present">Spotter present</option>
+    <option value="Follow permit">Follow permit</option>
+    <option value="Ask questions if unsure">Ask questions if unsure</option>
+    <option value="Verify asset ID">Verify asset ID</option>
+    <option value="Lift with legs">Lift with legs</option>
+<option value="Positive communication">Positive communication</option>
+<option value="Correct tooling">Correct tooling</option>
+<option value="Understand task before starting">Understand task before starting</option>
+<option value="Use spotter">Use spotter</option>
+<option value="Maintain exclusion zone">Maintain exclusion zone</option>
+<option value="Use mechanical aids">Use mechanical aids</option>
+<option value="Pre-start checks">Pre-start checks</option>
+<option value="Stay hydrated">Stay hydrated</option>
+<option value="Follow JHA process">Follow JHA process</option>
+<option value="Use barricades">Use barricades</option>
+  </select>
+
+  <label>Comments:</label>
+  <textarea id="comments" rows="3" placeholder="Add any specific notes or precautions..."></textarea>
+
+  <button id="generateBtn" type="button">Generate JHA</button>
+
+  <div id="output">Your JHA will appear here...</div>
+</main>
+
+<script>
+  function generateJHA() {
+    const task = document.getElementById("task").value.trim();
+    const tools = document.getElementById("tools").value.trim();
+    const hazards = Array.from(document.getElementById("hazards").selectedOptions).map(opt => opt.value);
+    const controls = Array.from(document.getElementById("controls").selectedOptions).map(opt => opt.value);
+    const comments = document.getElementById("comments").value.trim();
+
+    let result = `Task: ${task}\nTools: ${tools}\n`;
+
+    const hazardDetails = {
+      "Slips": t => {
+        const variants = [
+          `While performing "${t}", the floor may be wet or slippery, increasing the chance of slips and falls.`,
+          `During "${t}", uneven or muddy surfaces may lead to slip-related injuries such as ankle sprains.`
+        ];
+        return variants[Math.floor(Math.random() * variants.length)];
+      },
+      "Trips": t => {
+        const variants = [
+          `Trip hazards like hoses or tools underfoot during "${t}" may result in minor or moderate injuries.`,
+          `"${t}" may involve cluttered or uneven areas, increasing the risk of tripping and falling.`
+        ];
+        return variants[Math.floor(Math.random() * variants.length)];
+      },
+      "Falls": t => `We will be carrying out "${t}" at heights or on ladders, which could expose us to fall hazards and result in serious injuries.`,
+      "Pinch Points": t => {
+        const toolText = tools ? "using " + tools : "using hand tools";
+        return `We will be ${toolText} to ${t}, which could expose us to pinch points between the tools and guarding, resulting in finger and hand injuries.`;
+      },
+      "Manual Handling": t => `The task "${t}" may involve lifting or moving heavy items, exposing workers to manual handling risks such as back strain or dropped object injuries.`,
+      "Line of Fire": t => `We will be performing "${t}" near moving equipment or suspended loads, which may expose us to line of fire hazards resulting in crush or impact injuries.`,
+      "Isolation Error": t => `We will be ${t} involving isolation processes, and if incorrect, it could lead to unexpected energization or movement causing serious injury or equipment damage.`
+    };
+
+    if (hazards.length > 0) {
+      result += `\nHazard/Risk Description:\n`;
+      hazards.forEach(h => {
+        if (hazardDetails[h]) {
+          result += `- ${hazardDetails[h](task)}\n`;
+        } else {
+          result += `- Exposure to ${h.toLowerCase()} may result in injury or equipment damage.\n`;
+        }
+      });
+    }
+
+    if (controls.length > 0) {
+      result += `\nControls:\n`;
+      controls.forEach(c => {
+        result += `- ${c}\n`;
+      });
+    }
+
+    if (comments) {
+      result += `\nComments:\n${comments}`;
+    }
+
+    document.getElementById("output").textContent = result.trim();
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("generateBtn").addEventListener("click", generateJHA);
+  });
+</script>
+
+</body>
+</html>
